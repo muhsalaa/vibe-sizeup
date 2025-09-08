@@ -1,7 +1,7 @@
-import { useRef, useState } from 'react';
-import type { Mesh } from 'three';
-import { DimensionLines } from './DimensionLines';
-import type { TargetItem, Comparator, Unit, TargetPosition } from '../types';
+import { useRef, useState } from "react";
+import type { Mesh } from "three";
+import { DimensionLines } from "./DimensionLines";
+import type { TargetItem, Comparator, Unit, TargetPosition } from "../types";
 
 interface TargetMeshProps {
   targetItem: TargetItem;
@@ -12,9 +12,16 @@ interface TargetMeshProps {
   showDimensionLines: boolean;
 }
 
-export function TargetMesh({ targetItem, comparator, unit, position, distance, showDimensionLines }: TargetMeshProps) {
+export function TargetMesh({
+  targetItem,
+  comparator,
+  unit,
+  position,
+  distance,
+  showDimensionLines,
+}: TargetMeshProps) {
   const meshRef = useRef<Mesh>(null);
-  const [hovered, setHovered] = useState(false);
+  const [, setHovered] = useState(false);
 
   const { shape, dimensions } = targetItem;
   const w = dimensions.w || 10;
@@ -27,38 +34,34 @@ export function TargetMesh({ targetItem, comparator, unit, position, distance, s
     const compDims = comparator.dimensions;
     const compW = compDims.w || 0;
     const compH = compDims.h || 0;
-    const compD = compDims.d || 0;
-    
+    // const compD = compDims.d || 0;
+
     // Calculate target item's center offset for proper positioning
-    const targetW = shape === 'sphere' ? r : w / 2;
-    const targetH = shape === 'sphere' ? r : h / 2;
-    const targetD = shape === 'sphere' ? r : d / 2;
+    const targetW = shape === "sphere" ? r : w / 2;
+    const targetH = shape === "sphere" ? r : h / 2;
+    // const targetD = shape === 'sphere' ? r : d / 2;
 
     switch (position) {
-      case 'right':
+      case "right":
         return [
           compW / 2 + distance + targetW,
-          shape === 'sphere' ? r : h / 2, // Ground level positioning
-          0
+          shape === "sphere" ? r : h / 2, // Ground level positioning
+          0,
         ];
-      
-      case 'left':
+
+      case "left":
         return [
           -(compW / 2 + distance + targetW),
-          shape === 'sphere' ? r : h / 2,
-          0
-        ];
-      
-      case 'top':
-        return [
+          shape === "sphere" ? r : h / 2,
           0,
-          compH + distance + targetH,
-          0
         ];
-      
-      case 'bottom':
+
+      case "top":
+        return [0, compH + distance + targetH, 0];
+
+      case "bottom":
         // For desk: place under desk surface, for others: below ground
-        if (comparator.id === 'desk') {
+        if (comparator.id === "desk") {
           // Place under desk surface (desk height - distance - target height)
           const underDeskY = Math.max(compH - distance - targetH, targetH);
           return [0, underDeskY, 0];
@@ -66,16 +69,16 @@ export function TargetMesh({ targetItem, comparator, unit, position, distance, s
           // Default: below ground (for other comparators if they allow bottom)
           return [0, -(distance + targetH), 0];
         }
-      
+
       default:
-        return [0, shape === 'sphere' ? r : h / 2, 0];
+        return [0, shape === "sphere" ? r : h / 2, 0];
     }
   };
 
   const targetPosition = getTargetPosition();
 
   // Don't render if no dimensions are set
-  if ((shape === 'box' && (!w || !h || !d)) || (shape === 'sphere' && !r)) {
+  if ((shape === "box" && (!w || !h || !d)) || (shape === "sphere" && !r)) {
     return null;
   }
 
@@ -87,18 +90,18 @@ export function TargetMesh({ targetItem, comparator, unit, position, distance, s
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
       >
-        {shape === 'box' ? (
+        {shape === "box" ? (
           <boxGeometry args={[w, h, d]} />
         ) : (
           <sphereGeometry args={[r, 32, 16]} />
         )}
-        <meshStandardMaterial 
+        <meshStandardMaterial
           color="#3B82F6" // Blue highlight color
-          transparent 
+          transparent
           opacity={0.9}
         />
       </mesh>
-      
+
       {/* Dimension Lines */}
       {showDimensionLines && (
         <DimensionLines
