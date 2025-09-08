@@ -63,7 +63,7 @@ function App() {
       {/* Toggle button - visible on all screen sizes */}
       <button
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="fixed top-4 left-4 z-50 bg-white rounded-lg shadow-lg p-2 border hover:bg-gray-50 transition-colors"
+        className="fixed top-4 left-4 z-[1000] bg-white rounded-lg shadow-lg p-2 border hover:bg-gray-50 transition-colors"
       >
         <div className="w-6 h-6 flex flex-col justify-center space-y-1">
           <div
